@@ -1,1 +1,3 @@
 *.o
+sse_ethernet_frame_is_tagged
+neon_ethernet_frame_is_tagged
