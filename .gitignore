@@ -1,5 +1,13 @@
+# objects
 *.o
+
+# uncrustify
+*.unc-backup*
+
+# binaries
 sse_ethernet_frame_is_tagged
 neon_ethernet_frame_is_tagged
 sse_crc32
 neon_crc32
+sse_byte_order
+neon_byte_order
