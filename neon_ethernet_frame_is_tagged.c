@@ -39,8 +39,7 @@ ethernet_frame_is_tagged_x2_neon(uint16_t const type0, uint16_t const type1)
                                         ETHERNET_TYPE_VLAN_9100,
                                         ETHERNET_TYPE_VLAN_9200};
 
-    uint16x8_t type_vect = {type0, type0, type0, type0,
-                            type1, type1, type1, type1};
+    uint16x8_t type_vect = vcombine_u16(vdup_n_u16(type0), vdup_n_u16(type1));
 
     uint16x8_t rv = vceqq_u16(ethertype_mask, type_vect);
 
