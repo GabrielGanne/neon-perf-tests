@@ -15,7 +15,7 @@ ifeq ($(DEBUG),1)
 CFLAGS += -O0 -g3 -march=native -std=gnu99 $(CFLAGS_WARN) -fsanitize=address
 LDFLAGS += -lasan
 else
-CFLAGS += -O3 -march=native -std=gnu99 $(CFLAGS_WARN)
+CFLAGS += -O3 -march=native -std=gnu99 $(CFLAGS_WARN) -DNDEBUG
 endif
 
 ifeq ($(ARCH), x86_64)

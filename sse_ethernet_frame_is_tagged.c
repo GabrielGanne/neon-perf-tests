@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdint.h>
 #include <x86intrin.h>
 
@@ -68,7 +69,7 @@ ethernet_frame_is_tagged_sse_2(uint16_t const type)
     return ethernet_frame_is_tagged_x2_sse(type, type);
 }
 
-#define ethernet_frame_is_tagged_sse ethernet_frame_is_tagged_ref
+#define ethernet_frame_is_tagged_sse ethernet_frame_is_tagged_sse_2
 
 int
 main()
@@ -78,6 +79,7 @@ main()
     r = 0;
     for (i = 0; i <= 0xffff; i++)
     {
+        assert(ethernet_frame_is_tagged_sse(i) == ethernet_frame_is_tagged_ref(i));
         r |= ethernet_frame_is_tagged_sse(i);
     }
 

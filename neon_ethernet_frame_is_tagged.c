@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdint.h>
 
 #include <arm_neon.h>
@@ -75,6 +76,7 @@ main()
     r = 0;
     for (i = 0; i <= 0xffff; i++)
     {
+        assert(ethernet_frame_is_tagged_neon(i) == ethernet_frame_is_tagged_ref(i));
         r |= ethernet_frame_is_tagged_neon(i);
     }
 
