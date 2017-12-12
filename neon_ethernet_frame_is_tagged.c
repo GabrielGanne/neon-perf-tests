@@ -44,7 +44,7 @@ ethernet_frame_is_tagged_x2_neon(uint16_t const type0, uint16_t const type1)
 
     uint16x8_t rv = vceqq_u16(ethertype_mask, type_vect);
 
-    return vmaxvq_u16(rv) != 0;
+    return vaddlvq_u16(rv) != 0;
 }
 
 static inline int
@@ -57,7 +57,7 @@ ethernet_frame_is_tagged_neon_1(uint16_t const type)
 
     uint16x4_t r = vdup_n_u16(type);
     uint16x4_t rv = vceq_u16(ethertype_mask, r);
-    return vmaxv_u16(rv) != 0;
+    return vaddlv_u16(rv) != 0;
 }
 
 static inline int
