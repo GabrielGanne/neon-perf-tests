@@ -5,6 +5,9 @@
 
 #include <arm_acle.h>
 
+#define likely(x)   __builtin_expect((x), 1)
+#define unlikely(x) __builtin_expect((x), 0)
+
 static inline uint64_t
 oat_hash(uint8_t const * buffer, unsigned int len)
 {
@@ -62,7 +65,7 @@ clib_xxhash(uint8_t const * buffer, unsigned int len)
     uint64_t tmp;
 
     tmp = 0;
-    if (8*_len != len)
+    if (unlikely(8*_len != len))
         memcpy(&tmp, buffer + 8*_len, len - 8*_len);
     for (i = 0; i < _len; i++)
     {
@@ -101,32 +104,49 @@ clib_crc32c(uint8_t const * s, unsigned int len)
 }
 
 #define TEST_NUM 1000000
+#ifndef hash_fn
 #define hash_fn clib_crc32c
+#endif
+#ifndef N
+#define N 4
+#endif
+#ifndef BUFF_SZ
+#define BUFF_SZ 16
+#endif
 
 int
-main(int argc, char ** argv)
+main()
 {
-    int i;
-    unsigned int seed;
-    uint32_t rv;
+    int i, j;
+    size_t k;
+    volatile uint32_t rv;
+    volatile uint32_t r[N];
 
-    if (argc != 2)
-        return -1;
-
-    seed = atol(argv[1]);
-    srandom(seed);
+    srandom(0);
     rv = 0;
 
+    unsigned long buffer[BUFF_SZ];
+    for (k = 0; k < sizeof(buffer)/sizeof(*buffer); k++)
+    {
+        buffer[k] = random();
+    }
+
+    for (j = 0; j < N; j++)
+    {
+        r[j] = 0;
+    }
     for (i = 0; i < TEST_NUM; i++)
     {
-        size_t j;
-        unsigned long buffer[8];
-        for (j = 0; j < sizeof(buffer)/sizeof(*buffer); j++)
+        for (j = 0; j < N; j++)
         {
-            buffer[j] = random();
+            r[j] ^= hash_fn((uint8_t const *)buffer, BUFF_SZ);
         }
+    }
 
-        rv ^= hash_fn((uint8_t const *)buffer, 8);
+    rv = 0;
+    for (j = 0; j < N; j++)
+    {
+        rv ^= r[j];
     }
 
     return rv;

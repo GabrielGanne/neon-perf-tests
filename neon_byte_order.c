@@ -62,7 +62,7 @@ byte_swap_u64_asm(uint64_t x)
 #define byte_swap_u16 byte_swap_u16_asm
 #define byte_swap_u32 byte_swap_u32_asm
 #define byte_swap_u64 byte_swap_u64_asm
-#define N (100000000)
+#define TEST_NUM (100000000)
 
 int
 main()
@@ -71,7 +71,7 @@ main()
     uint64_t rv;
 
     rv = 0;
-    for (x = 0; x < N; x++)
+    for (x = 0; x < TEST_NUM; x++)
     {
         rv ^= byte_swap_u16(x);
         rv ^= byte_swap_u32(x);
