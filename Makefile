@@ -25,6 +25,7 @@ SOURCES = $(wildcard neon_*.c)
 else
 $(error invalid ARCH)
 endif
+SOURCES += estimate_clock_frequency.c
 
 OBJECTS = $(SOURCES:.c=.o)
 

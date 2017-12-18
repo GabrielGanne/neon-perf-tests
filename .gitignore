@@ -11,3 +11,4 @@ sse_crc32
 neon_crc32
 sse_byte_order
 neon_byte_order
+estimate_clock_frequency
