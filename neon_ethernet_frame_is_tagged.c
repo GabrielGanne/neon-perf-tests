@@ -66,19 +66,56 @@ ethernet_frame_is_tagged_neon_2(uint16_t const type)
     return ethernet_frame_is_tagged_x2_neon(type, type);
 }
 
-#define ethernet_frame_is_tagged_neon ethernet_frame_is_tagged_neon_2
+static inline int
+ethernet_frame_is_tagged_neon_3(uint16_t const type)
+{
+    uint16x4_t const ethertype_mask = { ETHERNET_TYPE_VLAN,
+                                        ETHERNET_TYPE_DOT1AD,
+                                        ETHERNET_TYPE_VLAN_9100,
+                                        ETHERNET_TYPE_VLAN_9200};
+
+    uint16x4_t r = vdup_n_u16(type);
+    r = vceq_u16(ethertype_mask, r);
+    return ((uint64_t) r) != 0;
+}
+
+#ifndef test_fn
+#define test_fn ethernet_frame_is_tagged_neon_2
+#endif
+#ifndef N
+#define N 16
+#endif
+
+#define TEST_NUM 1000000
 
 int
 main()
 {
-    int i, r;
+    int i, rv;
+    unsigned j;
+    /* padded with 0 */
+    uint16_t const table[N] = {ETHERNET_TYPE_VLAN, ETHERNET_TYPE_DOT1AD,
+                              ETHERNET_TYPE_VLAN_9100, ETHERNET_TYPE_VLAN_9200,
+                              ETHERNET_TYPE_VLAN, ETHERNET_TYPE_DOT1AD,
+                              ETHERNET_TYPE_VLAN_9100, ETHERNET_TYPE_VLAN_9200};
+    int r[N];
 
-    r = 0;
-    for (i = 0; i <= 0xffff; i++)
+    for (j = 0; j < N; j++)
     {
-        assert(ethernet_frame_is_tagged_neon(i) == ethernet_frame_is_tagged_ref(i));
-        r |= ethernet_frame_is_tagged_neon(i);
+        r[j] = 0;
+    }
+    for (i = 0; i <= TEST_NUM; i++)
+    {
+        for (j = 0; j < N; j++)
+        {
+            r[j] |= test_fn(table[j], table[N - (j + 1)]);
+        }
     }
 
-    return r;
+    rv = 0;
+    for (j = 0; j < N; j++)
+    {
+        rv |= r[j];
+    }
+    return rv;
 }
