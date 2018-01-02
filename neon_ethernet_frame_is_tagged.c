@@ -61,9 +61,9 @@ u16x8_zero_byte_mask(uint16x8_t const input)
         vreinterpretq_u8_u16(vceqq_u16(input, vreinterpretq_u16_u8(vall_one)));
     uint8x16_t before_merge = vminq_u8(test_result, res_values);
     /*
-      before_merge--> [0x80, 0x00, 0x00, 0x10, ... ]
-       u8x16 --> [a,b,c,d, e,f,g,h, i,j,k,l, m,n,o,p]
-       pair add until we have 2 uint64_t
+     * before_merge--> [0x80, 0x00, 0x00, 0x10, ... ]
+     * u8x16 --> [a,b,c,d, e,f,g,h, i,j,k,l, m,n,o,p]
+     * pair add until we have 2 uint64_t
      */
     uint16x8_t merge1 = vpaddlq_u8(before_merge);
     /* u16x8-->  [a+b,c+d, e+f,g+h, i+j,k+l, m+n,o+p] */
@@ -127,7 +127,7 @@ ethernet_frame_is_tagged_neon_3(uint16_t const type)
 }
 
 #ifndef test_fn
-#define test_fn ethernet_frame_is_tagged_neon_2
+#define test_fn ethernet_frame_is_tagged_x2_neon_2
 #endif
 #ifndef N
 #define N 16
